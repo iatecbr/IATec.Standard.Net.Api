@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Compile Remove="Class1.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="ClientAuthentication\" />
+      <Folder Include="Communication\DomainEvents\" />
+      <Folder Include="Communication\IntegrationEvents\" />
+      <Folder Include="Contracts\Mediator\" />
+      <Folder Include="Resources\" />
+      <Folder Include="Validators\" />
+    </ItemGroup>
+
+</Project>

@@ -1,0 +1,46 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Compile Remove="Persistence\Configurations\AreaMappimg.cs" />
+      <Compile Remove="Migrations\DataContextModelSnapshot.cs" />
+      <Compile Remove="Migrations\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="BackgroundJobs\" />
+      <Folder Include="MesageQueue\Configurations\" />
+      <Folder Include="MesageQueue\Consumers\" />
+      <Folder Include="MesageQueue\Messages\" />
+      <Folder Include="MesageQueue\Notifications\" />
+      <Folder Include="Persistence\Migrations\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.1" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.1" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.1" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.1">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Domain\Domain.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="Migrations\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Migrations\**" />
+    </ItemGroup>
+
+</Project>
