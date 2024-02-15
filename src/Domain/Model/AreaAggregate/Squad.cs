@@ -1,4 +1,7 @@
 using Domain.SeedWorks;
+using Domain.Shared;
+using Domain.Shared.Extensions;
+using FluentValidation;
 
 namespace Domain.Model.AreaAggregate;
 
@@ -15,13 +18,19 @@ public class Squad : EntityInt32
         _persons = new List<Person>();
     }
 
-    public Squad(string name, int amountPerson)
+    private Squad(string name)
     {
         Name = name;
-        AmountPerson = amountPerson;
+        AmountPerson = 0;
         _persons = new List<Person>();
     }
-
+    
+    public static Response<Squad> Create(string name, IValidator<Squad> validator)
+    {
+        var squad = new Squad(name);
+        var validationResult = validator.Validate(squad);
+        return Response.Create(squad, validationResult.MessageErrors());
+    }
 
     public void AddPerson(Person person)
     {

@@ -1,15 +1,14 @@
-using Domain.Contracts.Notifier;
+using Domain.Shared;
 using FluentValidation;
 using MediatR;
 
-namespace Api.Configurations.Mediator;
+namespace CrossCutting.Behaviors;
 
 public class ValidatorPipelineBehavior<TRequest, TResponse>
-    (IEnumerable<IValidator<TRequest>> validators, INotifierMessage notifierMessage) : 
-        IPipelineBehavior<TRequest, TResponse> 
+    (IEnumerable<IValidator<TRequest>> validators) : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>
+    where TResponse : Response
 {
-    
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, 
         CancellationToken cancellationToken)
     {
@@ -26,11 +25,22 @@ public class ValidatorPipelineBehavior<TRequest, TResponse>
             .Distinct()
             .ToList();
 
-
         if (errorList.Count <= 0) 
             return await next();
-        
-        notifierMessage.AddRange(errorList);
-        return await next();
+
+        var result = BuildResponse<TResponse>(errorList);
+        return result;
+    }
+    
+    private static TResult BuildResponse<TResult>(List<string> errors)
+        where TResult : Response
+    {
+        var validation = typeof(Response<>)
+            .GetGenericTypeDefinition()
+            .MakeGenericType(typeof(TResult).GenericTypeArguments[0])
+            .GetMethod(nameof(Response.Failed))!
+            .Invoke(null, [errors])!;
+
+        return (TResult)validation;
     }
 }

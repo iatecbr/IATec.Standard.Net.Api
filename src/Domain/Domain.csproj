@@ -7,16 +7,21 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Compile Remove="Class1.cs" />
+      <PackageReference Include="FluentValidation" Version="11.9.0" />
+      <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.9.0" />
     </ItemGroup>
 
     <ItemGroup>
       <Folder Include="ClientAuthentication\" />
       <Folder Include="Communication\DomainEvents\" />
       <Folder Include="Communication\IntegrationEvents\" />
-      <Folder Include="Contracts\Mediator\" />
       <Folder Include="Resources\" />
-      <Folder Include="Validators\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="Shared\ValidationResponseT.cs" />
+      <Compile Remove="Shared\ValidationResponse.cs" />
+      <Compile Remove="Shared\IValidationResponse.cs" />
     </ItemGroup>
 
 </Project>
