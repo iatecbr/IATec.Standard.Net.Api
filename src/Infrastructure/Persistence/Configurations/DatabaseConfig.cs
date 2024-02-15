@@ -17,6 +17,7 @@ public static class DatabaseConfig
             .UseSqlServer(connectionString));
         services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<DataContext>());
 
+        services.AddScoped<IRepositoryQuery, RepositoryQuery>();
         services.AddScoped<IAreaRepository, AreaRepository>();
     }
 }

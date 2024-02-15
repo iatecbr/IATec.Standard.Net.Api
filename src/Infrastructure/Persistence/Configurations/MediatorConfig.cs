@@ -1,4 +1,6 @@
-namespace Api.Configurations.Mediator;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace Infrastructure.Persistence.Configurations;
 
 public static class MediatorConfig
 {
@@ -7,8 +9,6 @@ public static class MediatorConfig
         services.AddMediatR(config =>
         {
             config.RegisterServicesFromAssembly(typeof(MediatorConfig).Assembly);
-            
-            config.AddOpenBehavior(typeof(ValidatorPipelineBehavior<,>));
         });
 
         return services;
