@@ -15,4 +15,19 @@
       <ProjectReference Include="..\Domain\Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="AreaFeatures\Queries\AreaQueries.cs" />
+      <Compile Remove="AreaFeatures\Queries\IAreaQueries.cs" />
+      <Compile Remove="Configurations\Queries\QueriesConfig.cs" />
+      <Compile Remove="Configurations\Queries\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="Configurations\Queries\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Configurations\Queries\**" />
+    </ItemGroup>
+
 </Project>

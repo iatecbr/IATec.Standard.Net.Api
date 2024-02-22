@@ -1,16 +1,15 @@
 using System.Linq.Expressions;
-using Domain.Contracts.Repositories;
+using Domain.Contracts.Repositories.Generic;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Persistence.Repositories;
+namespace Infrastructure.Persistence.Repositories.Generic;
 
-public class RepositoryQuery(DataContext dataContext) : IRepositoryQuery
+internal class GenericRepositoryQuery(ReadDataContext readDataContext) : IGenericRepositoryQuery
 {
     public IQueryable<T> Query<T>(params Expression<Func<T, object>>[] includeProperties) where T : class
     {
-        var query = dataContext.Set<T>()
-            .AsQueryable()
-            .AsNoTrackingWithIdentityResolution();
+        var query = readDataContext.Set<T>()
+            .AsQueryable();
         
         query = includeProperties.Aggregate(query, (current, includeProperty) 
             => current.Include(includeProperty));

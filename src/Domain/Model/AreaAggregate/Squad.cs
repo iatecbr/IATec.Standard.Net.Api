@@ -7,6 +7,8 @@ namespace Domain.Model.AreaAggregate;
 
 public class Squad : EntityInt32
 {
+    public int AreaId { get; private set; }
+    public Area Area { get; private set; }
     public string? Name { get; private set; }
     public int AmountPerson { get; private set; }
 

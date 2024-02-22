@@ -3,4 +3,4 @@ using MediatR;
 
 namespace Application.AreaFeatures.Queries;
 
-public sealed record GetAreaQuery(int AreaId) : IRequest<AreaReadDto?>;
+public sealed record GetAreaSquadQuery : IRequest<List<AreaSquadReadDto>>;

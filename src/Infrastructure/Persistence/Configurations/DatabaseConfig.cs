@@ -1,6 +1,5 @@
-using Domain.Contracts.Repositories;
-using Domain.SeedWorks;
-using Infrastructure.Persistence.Repositories;
+using Domain.Contracts.Repositories.Generic;
+using Infrastructure.Persistence.Repositories.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,11 +12,14 @@ public static class DatabaseConfig
     {
         
         var connectionString = configuration.GetConnectionString("Database");
-        services.AddDbContext<DataContext>((_, options) => options
+        services.AddDbContext<WriteDataContext>((_, options) => options
             .UseSqlServer(connectionString));
-        services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<DataContext>());
-
-        services.AddScoped<IRepositoryQuery, RepositoryQuery>();
-        services.AddScoped<IAreaRepository, AreaRepository>();
+        
+        var readConnectionString = configuration.GetConnectionString("Database");
+        services.AddDbContext<ReadDataContext>((_, options) => options
+            .UseSqlServer(readConnectionString)
+            .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTrackingWithIdentityResolution));
+        
+        services.AddScoped<IGenericRepositoryQuery, GenericRepositoryQuery>();
     }
 }

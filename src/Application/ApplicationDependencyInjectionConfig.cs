@@ -1,5 +1,4 @@
 using Application.Configurations.Mediator;
-using Application.Configurations.Queries;
 using Application.Configurations.Validator;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -10,8 +9,7 @@ public static class ApplicationDependencyInjectionConfig
     public static IServiceCollection ConfigureApplication(this IServiceCollection services)
     {
         services.AddMediator()
-            .AddValidators()
-            .AddQueries();
+            .AddValidators();
         
         return services;
     }

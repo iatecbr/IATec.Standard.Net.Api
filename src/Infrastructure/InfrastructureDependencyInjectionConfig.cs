@@ -1,4 +1,7 @@
+using Domain.Contracts.Repositories;
 using Infrastructure.Persistence.Configurations;
+using Infrastructure.Persistence.Repositories;
+using Infrastructure.Persistence.Repositories.Contracts;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -10,5 +13,8 @@ public static class InfrastructureDependencyInjectionConfig
     {
         services.AddMediator()
             .AddData(configuration);
+        
+        services.AddScoped<IAreaWriteRepository, AreaWriteRepository>();
+        services.AddScoped<IAreaReadRepository, AreaReadRepository>();
     }
 }
