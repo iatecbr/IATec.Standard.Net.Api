@@ -1,6 +1,6 @@
-using Application.AreaFeatures.Queries.DTOs;
+using Domain.Contracts.Repositories;
 using Domain.Model.AreaAggregate;
-using Infrastructure.Persistence.Repositories.Contracts;
+using Domain.Model.AreaAggregate.DTOs;
 using Infrastructure.Persistence.Repositories.Generic;
 using Microsoft.EntityFrameworkCore;
 

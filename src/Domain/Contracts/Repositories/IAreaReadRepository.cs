@@ -1,8 +1,8 @@
-using Application.AreaFeatures.Queries.DTOs;
 using Domain.Contracts.Repositories.Generic;
 using Domain.Model.AreaAggregate;
+using Domain.Model.AreaAggregate.DTOs;
 
-namespace Infrastructure.Persistence.Repositories.Contracts;
+namespace Domain.Contracts.Repositories;
 
 public interface IAreaReadRepository : IReadRepository<Area>
 {

@@ -1,4 +1,4 @@
-using Application.AreaFeatures.Queries.DTOs;
+using Domain.Model.AreaAggregate.DTOs;
 using MediatR;
 
 namespace Application.AreaFeatures.Queries;

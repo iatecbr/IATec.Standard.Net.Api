@@ -2,6 +2,7 @@ using System.Net;
 using Application.AreaFeatures.Commands;
 using Application.AreaFeatures.Queries;
 using Application.AreaFeatures.Queries.DTOs;
+using Domain.Model.AreaAggregate.DTOs;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

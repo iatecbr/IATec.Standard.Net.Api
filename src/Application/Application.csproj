@@ -8,6 +8,7 @@
 
     <ItemGroup>
       <Folder Include="AreaFeatures\Events\" />
+      <Folder Include="Contracts\Repositories\" />
     </ItemGroup>
 
     <ItemGroup>
@@ -20,6 +21,7 @@
       <Compile Remove="AreaFeatures\Queries\IAreaQueries.cs" />
       <Compile Remove="Configurations\Queries\QueriesConfig.cs" />
       <Compile Remove="Configurations\Queries\**" />
+      <Compile Remove="Contracts\Repositories.cs" />
     </ItemGroup>
 
     <ItemGroup>

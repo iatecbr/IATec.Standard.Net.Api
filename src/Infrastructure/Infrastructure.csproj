@@ -10,6 +10,9 @@
       <Compile Remove="Persistence\Configurations\AreaMappimg.cs" />
       <Compile Remove="Migrations\DataContextModelSnapshot.cs" />
       <Compile Remove="Migrations\**" />
+      <Compile Remove="Persistence\Configurations\MediatorConfig.cs" />
+      <Compile Remove="Persistence\Repositories\Contracts\**" />
+      <Compile Remove="Persistence\Queries\**" />
     </ItemGroup>
 
     <ItemGroup>
@@ -32,15 +35,19 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Application\Application.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
       <EmbeddedResource Remove="Migrations\**" />
+      <EmbeddedResource Remove="Persistence\Repositories\Contracts\**" />
+      <EmbeddedResource Remove="Persistence\Queries\**" />
     </ItemGroup>
 
     <ItemGroup>
       <None Remove="Migrations\**" />
+      <None Remove="Persistence\Repositories\Contracts\**" />
+      <None Remove="Persistence\Queries\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Domain\Domain.csproj" />
     </ItemGroup>
 
 </Project>

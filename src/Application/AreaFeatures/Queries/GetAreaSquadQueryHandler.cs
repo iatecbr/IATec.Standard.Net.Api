@@ -1,9 +1,8 @@
-using Application.AreaFeatures.Queries;
-using Application.AreaFeatures.Queries.DTOs;
-using Infrastructure.Persistence.Repositories.Contracts;
+using Domain.Contracts.Repositories;
+using Domain.Model.AreaAggregate.DTOs;
 using MediatR;
 
-namespace Infrastructure.Persistence.Queries;
+namespace Application.AreaFeatures.Queries;
 
 internal sealed class GetAreaSquadQueryHandler(IAreaReadRepository areaReadRepository) 
     : IRequestHandler<GetAreaSquadQuery, List<AreaSquadReadDto>>
