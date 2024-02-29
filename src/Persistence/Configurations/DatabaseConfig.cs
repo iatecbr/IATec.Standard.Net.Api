@@ -1,10 +1,10 @@
 using Domain.Contracts.Repositories.Generic;
-using Infrastructure.Persistence.Repositories.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Persistence.Repositories.Generic;
 
-namespace Infrastructure.Persistence.Configurations;
+namespace Persistence.Configurations;
 
 public static class DatabaseConfig
 {

@@ -1,7 +1,7 @@
 using Domain.Contracts.Repositories.Generic;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Persistence.Repositories.Generic;
+namespace Persistence.Repositories.Generic;
 
 public class WriteRepository<T>(DbContext dbContext) : ReadRepository<T>(dbContext), IWriteRepository<T> 
     where T : class

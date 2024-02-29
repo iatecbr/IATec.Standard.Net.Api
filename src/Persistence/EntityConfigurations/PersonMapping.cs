@@ -2,7 +2,7 @@ using Domain.Model.AreaAggregate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Infrastructure.Persistence.EntityConfigurations;
+namespace Persistence.EntityConfigurations;
 
 internal sealed class PersonMapping : IEntityTypeConfiguration<Person>
 {

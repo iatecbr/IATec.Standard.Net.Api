@@ -2,7 +2,7 @@ using System.Linq.Expressions;
 using Domain.Contracts.Repositories.Generic;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Persistence.Repositories.Generic;
+namespace Persistence.Repositories.Generic;
 
 internal class GenericRepositoryQuery(ReadDataContext readDataContext) : IGenericRepositoryQuery
 {

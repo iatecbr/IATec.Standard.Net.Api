@@ -1,6 +1,6 @@
 using Api.Configurations.Extensions;
-using Application;
-using Infrastructure;
+using Application.Configurations;
+using Persistence.Configurations;
 
 var builder = WebApplication.CreateBuilder(args);
 

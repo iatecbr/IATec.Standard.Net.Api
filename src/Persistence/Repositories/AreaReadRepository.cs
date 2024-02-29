@@ -1,10 +1,10 @@
 using Domain.Contracts.Repositories;
 using Domain.Model.AreaAggregate;
 using Domain.Model.AreaAggregate.DTOs;
-using Infrastructure.Persistence.Repositories.Generic;
 using Microsoft.EntityFrameworkCore;
+using Persistence.Repositories.Generic;
 
-namespace Infrastructure.Persistence.Repositories;
+namespace Persistence.Repositories;
 
 public class AreaReadRepository(ReadDataContext readDataContext) 
     : ReadRepository<Area>(readDataContext), IAreaReadRepository

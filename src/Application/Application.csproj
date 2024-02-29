@@ -8,7 +8,6 @@
 
     <ItemGroup>
       <Folder Include="AreaFeatures\Events\" />
-      <Folder Include="Contracts\Repositories\" />
     </ItemGroup>
 
     <ItemGroup>

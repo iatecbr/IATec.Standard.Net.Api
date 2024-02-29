@@ -1,7 +1,7 @@
 using Domain.Model.AreaAggregate;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Persistence;
+namespace Persistence;
 
 public class ReadDataContext : DbContext
 {

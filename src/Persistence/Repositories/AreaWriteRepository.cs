@@ -1,9 +1,9 @@
 using Domain.Contracts.Repositories;
 using Domain.Model.AreaAggregate;
-using Infrastructure.Persistence.Repositories.Generic;
 using Microsoft.EntityFrameworkCore;
+using Persistence.Repositories.Generic;
 
-namespace Infrastructure.Persistence.Repositories;
+namespace Persistence.Repositories;
 
 public class AreaWriteRepository(WriteDataContext writeDataContext) 
     : WriteRepository<Area>(writeDataContext), IAreaWriteRepository

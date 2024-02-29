@@ -1,10 +1,9 @@
 using Domain.Contracts.Repositories;
-using Infrastructure.Persistence.Configurations;
-using Infrastructure.Persistence.Repositories;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Persistence.Repositories;
 
-namespace Infrastructure;
+namespace Persistence.Configurations;
 
 public static class InfrastructureDependencyInjectionConfig
 {

@@ -4,24 +4,19 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <RootNamespace>Persistence</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
       <Compile Remove="Persistence\Configurations\AreaMappimg.cs" />
-      <Compile Remove="Migrations\DataContextModelSnapshot.cs" />
       <Compile Remove="Migrations\**" />
       <Compile Remove="Persistence\Configurations\MediatorConfig.cs" />
       <Compile Remove="Persistence\Repositories\Contracts\**" />
       <Compile Remove="Persistence\Queries\**" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="BackgroundJobs\" />
-      <Folder Include="MesageQueue\Configurations\" />
-      <Folder Include="MesageQueue\Consumers\" />
-      <Folder Include="MesageQueue\Messages\" />
-      <Folder Include="MesageQueue\Notifications\" />
-      <Folder Include="Persistence\Migrations\" />
+      <Compile Include="Migrations\20240206005725_Initial.cs" />
+      <Compile Include="Migrations\20240206005725_Initial.Designer.cs" />
+      <Compile Update="Migrations\DataContextModelSnapshot.cs" />
+      <Compile Remove="Configurations\AreaMappimg.cs" />
     </ItemGroup>
 
     <ItemGroup>

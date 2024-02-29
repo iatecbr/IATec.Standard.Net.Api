@@ -2,7 +2,7 @@ using Application.Configurations.Mediator;
 using Application.Configurations.Validator;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Application;
+namespace Application.Configurations;
 
 public static class ApplicationDependencyInjectionConfig
 {

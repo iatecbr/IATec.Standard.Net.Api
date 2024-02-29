@@ -2,16 +2,16 @@ using Domain.Model.AreaAggregate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Infrastructure.Persistence.EntityConfigurations;
+namespace Persistence.EntityConfigurations;
 
-internal sealed class AreaMapping : IEntityTypeConfiguration<Area>
+internal sealed class SquadMapping : IEntityTypeConfiguration<Squad>
 {
-    public void Configure(EntityTypeBuilder<Area> builder)
+    public void Configure(EntityTypeBuilder<Squad> builder)
     {
         builder.HasKey(c => c.Id);
 
         builder.Property(c => c.Id)
-            .HasColumnName("AreaId")
+            .HasColumnName("SquadId")
             .HasColumnType("int")
             .ValueGeneratedOnAdd();
 
@@ -19,10 +19,9 @@ internal sealed class AreaMapping : IEntityTypeConfiguration<Area>
             .HasColumnType("nvarchar(150)")
             .IsRequired();
 
-        builder.Property(p => p.Manager)
-            .HasColumnType("nvarchar(255)")
-            .IsRequired();
+        builder.Property(p => p.AmountPerson)
+            .HasColumnType("int");
 
-        builder.ToTable(nameof(Area));
+        builder.ToTable(nameof(Squad));
     }
 }
