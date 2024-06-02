@@ -4,7 +4,6 @@
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
 
-
 # User-specific files
 *.rsuser
 *.suo
@@ -14,6 +13,7 @@
 *.idea
 *.Idea
 *.DS_Store
+/NuGet.Config
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
