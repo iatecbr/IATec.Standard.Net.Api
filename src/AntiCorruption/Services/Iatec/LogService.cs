@@ -1,6 +1,6 @@
 using System.Net.Http.Json;
-using Domain.Contracts.Services.Logging;
-using Domain.Models.LoggingAggregate.Dtos;
+using IATec.Shared.Domain.Contracts.Services.Logging;
+using IATec.Shared.Domain.Models.LoggingAggregate.Dtos;
 using Microsoft.Extensions.Logging;
 
 namespace AntiCorruption.Services.Iatec;

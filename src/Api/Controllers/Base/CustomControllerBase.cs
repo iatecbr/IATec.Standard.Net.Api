@@ -1,5 +1,5 @@
-using Domain.Shared.Extensions;
 using FluentResults;
+using IATec.Shared.Domain.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers.Base;

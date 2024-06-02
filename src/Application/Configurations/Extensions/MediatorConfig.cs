@@ -1,4 +1,4 @@
-using CrossCutting.Behaviors;
+using IATec.Shared.Behaviors;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Application.Configurations.Extensions;

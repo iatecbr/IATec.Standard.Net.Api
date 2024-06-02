@@ -1,6 +1,6 @@
 using AntiCorruption.Services.Iatec;
-using Domain.Contracts.Services.Logging;
-using Domain.Shared.Options;
+using IATec.Shared.Domain.Contracts.Services.Logging;
+using IATec.Shared.Domain.Options;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 

@@ -1,4 +1,4 @@
-using Domain.Contracts.Transactions;
+using IATec.Shared.Domain.Contracts.Transactions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
