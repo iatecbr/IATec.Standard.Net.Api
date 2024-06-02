@@ -1,5 +1,0 @@
-root = true
-
-[*.cs]
-# Suprimir avisos sobre comentários de documentação faltando
-dotnet_diagnostic.CS8981.severity = none
