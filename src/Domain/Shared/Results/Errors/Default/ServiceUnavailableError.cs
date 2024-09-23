@@ -1,5 +1,5 @@
-using Domain.Shared.Messages;
 using FluentResults;
+using IATec.Shared.Domain.Messages;
 
 namespace Domain.Shared.Results.Errors.Default;
 

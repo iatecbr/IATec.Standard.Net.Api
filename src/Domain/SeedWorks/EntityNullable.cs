@@ -1,3 +1,5 @@
+using IATec.Shared.Domain.SeedWorks;
+
 namespace Domain.SeedWorks;
 
 public class EntityNullable : Entity<string?>
