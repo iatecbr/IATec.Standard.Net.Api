@@ -13,7 +13,6 @@ public static class ApiDependencyInjectionConfig
         // Add Filters 
         services.AddMvcCore(options =>
         {
-            options.Filters.Add<TransactionFilter>();
             options.Filters.Add<ExceptionFilter>();
         });
 

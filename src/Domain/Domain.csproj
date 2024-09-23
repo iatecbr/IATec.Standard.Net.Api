@@ -7,9 +7,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="FluentResults" Version="3.15.2"/>
-        <PackageReference Include="FluentValidation" Version="11.9.1"/>
-        <PackageReference Include="IATec.Shared.Domain" Version="0.0.1-RC7"/>
-        <PackageReference Include="IATec.Shared.Domain.EF" Version="0.0.1-RC2"/>
+        <PackageReference Include="FluentResults" Version="3.16.0" />
+        <PackageReference Include="FluentValidation" Version="11.10.0" />
+        <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.10.0" />
+        <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0"/>
     </ItemGroup>
 </Project>
