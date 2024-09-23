@@ -1,5 +1,5 @@
-using Domain.Contracts.Validator;
 using FluentValidation;
+using IATec.Shared.Domain.Contracts.Validator;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Application.Configurations.Factories;
