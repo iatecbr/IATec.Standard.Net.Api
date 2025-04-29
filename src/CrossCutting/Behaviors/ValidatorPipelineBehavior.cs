@@ -8,7 +8,7 @@ namespace CrossCutting.Behaviors;
 public class ValidatorPipelineBehavior<TRequest, TResponse>(IEnumerable<IValidator<TRequest>> validators)
     : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>
-    where TResponse : Result
+    where TResponse : ResultBase, new()
 {
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next,
         CancellationToken cancellationToken)
@@ -29,8 +29,12 @@ public class ValidatorPipelineBehavior<TRequest, TResponse>(IEnumerable<IValidat
     }
 
     private static TResult BuildResponse<TResult>(IEnumerable<ValidationFailure> errors)
-        where TResult : Result
+        where TResult : TResponse, new()
     {
-        return (TResult)Result.Fail(errors.Select(failure => failure.ErrorMessage).ToList());
+        var result = new TResult();
+        var errorList = errors.Select(e => new Error(e.ErrorMessage));
+        result.Reasons.AddRange(errorList);
+
+        return result;
     }
 }
