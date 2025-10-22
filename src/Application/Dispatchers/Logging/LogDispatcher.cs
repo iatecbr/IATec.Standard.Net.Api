@@ -16,13 +16,11 @@ public class LogDispatcher(ILogService logService, IOptions<ContainerOption> opt
         CancellationToken cancellationToken = default
     )
     {
-        await logService.SendAsync(new LogDto(
-            options.Value.Name,
-            source,
-            owner,
-            action,
-            "-",
-            content
-        ), cancellationToken);
+        var logDto = new LogDto
+        {
+            ContainerKey = options.Value.Name
+        };
+
+        await logService.SendAsync(logDto, cancellationToken);
     }
 }

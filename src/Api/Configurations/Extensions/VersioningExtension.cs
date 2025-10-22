@@ -14,13 +14,12 @@ public static class VersioningExtension
             option.ReportApiVersions = true;
             option.ApiVersionReader = ApiVersionReader.Combine(
                 new QueryStringApiVersionReader("api-version"));
-        }).AddApiExplorer(
-            options =>
-            {
-                // ReSharper disable once StringLiteralTypo
-                options.GroupNameFormat = "'v'VVV";
-                options.SubstituteApiVersionInUrl = true;
-            });
+        }).AddApiExplorer(options =>
+        {
+            // ReSharper disable once StringLiteralTypo
+            options.GroupNameFormat = "'v'VVV";
+            options.SubstituteApiVersionInUrl = true;
+        });
         return services;
     }
 }

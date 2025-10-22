@@ -11,6 +11,7 @@ public static class MediatorConfig
         {
             config.RegisterServicesFromAssembly(typeof(MediatorConfig).Assembly);
             config.AddOpenBehavior(typeof(ValidatorPipelineBehavior<,>));
+            config.AddOpenBehavior(typeof(ExceptionPipelineBehavior<,>));
         });
 
         return services;
