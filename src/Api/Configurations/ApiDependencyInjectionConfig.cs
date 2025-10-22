@@ -1,5 +1,4 @@
 using Api.Configurations.Extensions;
-using Api.Configurations.Filters;
 
 namespace Api.Configurations;
 
@@ -10,12 +9,6 @@ public static class ApiDependencyInjectionConfig
         IConfiguration configuration,
         IWebHostEnvironment environment)
     {
-        // Add Filters 
-        services.AddMvcCore(options =>
-        {
-            options.Filters.Add<ExceptionFilter>();
-        });
-
         // Add Local Extensions
         services.AddSwagger()
             .AddCorsPolicy()
