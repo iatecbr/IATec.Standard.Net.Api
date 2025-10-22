@@ -18,7 +18,12 @@ public class LogDispatcher(ILogService logService, IOptions<ContainerOption> opt
     {
         var logDto = new LogDto
         {
-            ContainerKey = options.Value.Name
+            ContainerKey = options.Value.ContainerId,
+            Source = source,
+            Owner = owner,
+            Action = action,
+            Content = content?.ToString()!,
+            Date = DateTime.UtcNow
         };
 
         await logService.SendAsync(logDto, cancellationToken);
