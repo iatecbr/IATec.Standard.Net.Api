@@ -1,5 +1,5 @@
 using System.Reflection;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Swashbuckle.AspNetCore.SwaggerUI;
 
@@ -22,19 +22,15 @@ public static class SwaggerExtension
                 BearerFormat = "JWT",
                 In = ParameterLocation.Header
             });
-            options.AddSecurityRequirement(new OpenApiSecurityRequirement
+
+            options.AddSecurityRequirement(_ =>
             {
+                OpenApiSecuritySchemeReference schemeRef = new("Bearer");
+                OpenApiSecurityRequirement requirement = new()
                 {
-                    new OpenApiSecurityScheme
-                    {
-                        Reference = new OpenApiReference
-                        {
-                            Type = ReferenceType.SecurityScheme,
-                            Id = "Bearer"
-                        }
-                    },
-                    Array.Empty<string>()
-                }
+                    [schemeRef] = []
+                };
+                return requirement;
             });
         });
 
@@ -55,7 +51,7 @@ public static class SwaggerExtension
     private static string GetXmlPath()
     {
         return Assembly.GetEntryAssembly()?.Location.Replace("dll", "xml") ??
-               "/app/bin/Debug/net8.0/Api.xml";
+               "/app/bin/Debug/net10.0/Api.xml";
     }
 
     private static void TryIncludeXmlComments(this SwaggerGenOptions c)
