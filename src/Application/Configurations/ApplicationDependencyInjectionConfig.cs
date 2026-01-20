@@ -1,6 +1,6 @@
 using Application.Configurations.Extensions;
 using Application.Dispatchers.Logging;
-using Domain.Contracts.Dispatcher;
+using IATec.Shared.Domain.Contracts.Dispatcher;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Application.Configurations;

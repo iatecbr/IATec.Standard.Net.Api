@@ -1,4 +1,4 @@
-using Domain.Shared.Options;
+using IATec.Shared.Domain.Options;
 
 namespace Api.Configurations.Extensions;
 

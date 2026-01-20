@@ -1,7 +1,7 @@
-using Domain.Contracts.Dispatcher;
-using Domain.Contracts.Services.Logging;
-using Domain.Models.LoggingAggregate.Dtos;
-using Domain.Shared.Options;
+using IATec.Shared.Domain.Contracts.Dispatcher;
+using IATec.Shared.Domain.Contracts.Services.Logging;
+using IATec.Shared.Domain.Models.LoggingAggregate.Dtos;
+using IATec.Shared.Domain.Options;
 using Microsoft.Extensions.Options;
 
 namespace Application.Dispatchers.Logging;
@@ -16,13 +16,16 @@ public class LogDispatcher(ILogService logService, IOptions<ContainerOption> opt
         CancellationToken cancellationToken = default
     )
     {
-        await logService.SendAsync(new LogDto(
-            options.Value.Name,
-            source,
-            owner,
-            action,
-            "-",
-            content
-        ), cancellationToken);
+        var logDto = new LogDto
+        {
+            ContainerKey = options.Value.ContainerId,
+            Source = source,
+            Owner = owner,
+            Action = action,
+            Content = content?.ToString()!,
+            Date = DateTime.UtcNow
+        };
+
+        await logService.SendAsync(logDto, cancellationToken);
     }
 }

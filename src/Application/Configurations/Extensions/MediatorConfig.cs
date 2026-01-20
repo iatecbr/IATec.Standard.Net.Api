@@ -1,4 +1,4 @@
-using CrossCutting.Behaviors;
+using IATec.Shared.Behaviors;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Application.Configurations.Extensions;
@@ -11,6 +11,7 @@ public static class MediatorConfig
         {
             config.RegisterServicesFromAssembly(typeof(MediatorConfig).Assembly);
             config.AddOpenBehavior(typeof(ValidatorPipelineBehavior<,>));
+            config.AddOpenBehavior(typeof(ExceptionPipelineBehavior<,>));
         });
 
         return services;

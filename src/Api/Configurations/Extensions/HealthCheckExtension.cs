@@ -15,7 +15,7 @@ public static class HealthCheckExtension
         IWebHostEnvironment environment)
     {
         services.AddHealthChecks()
-            .AddCheck<VersionHealthCheck>("Version", HealthStatus.Healthy, new[] { environment.EnvironmentName });
+            .AddCheck<VersionHealthCheck>("Version", HealthStatus.Healthy, [environment.EnvironmentName]);
 
         return services;
     }
