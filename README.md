@@ -698,22 +698,24 @@ Update `<Version>` in `Api.csproj` to `1.0.0` for the new project.
 
 ---
 
-## Known Limitations / TODOs
+## Template Extension Points
 
-| # | Item | Location | Severity |
-|---|------|----------|----------|
-| 1 | All handlers throw `NotImplementedException` | `Application/Features/Assets/` | 🔴 High |
-| 2 | Domain layer is completely empty | `src/Domain/` | 🔴 High |
-| 3 | Persistence layer is empty (no database) | `src/Persistence/` | 🔴 High |
-| 4 | MessageQueue layer is empty | `src/MessageQueue/` | 🟡 Medium |
-| 5 | CrossCutting layer is empty | `src/CrossCutting/` | 🟡 Medium |
-| 6 | No tests (no framework, no test files) | `*.Tests/` | 🔴 High |
-| 7 | No CI/CD pipelines | Root | 🟡 Medium |
-| 8 | Dockerfiles are empty | `docker/` | 🟡 Medium |
-| 9 | CORS allows any origin | `CorsPolicyExtension.cs` | 🟠 Security |
-| 10 | No authentication configured | `ApiDependencyInjectionConfig.cs` | 🟠 Security |
-| 11 | `{API_NAME}` placeholders still present | `ScalarConfiguration.cs`, README | 🟢 Low |
-| 12 | No `appsettings.Development.json` | `src/Api/` | 🟢 Low |
+This project is an **intentional scaffold/template**. The following items are **structural placeholders** — not bugs or missing features. Each represents an extension point where a new API project should add its own implementation.
+
+| # | Extension Point | Location | Purpose |
+|---|----------------|----------|---------|
+| 1 | `NotImplementedException` handlers | `Application/Features/Assets/` | Example command/query structure — replace with real business logic |
+| 2 | Empty `Domain` layer | `src/Domain/` | Add entities, aggregates, and business rules |
+| 3 | Empty `Persistence` layer | `src/Persistence/` | Add DbContext, repositories, migrations, connection strings |
+| 4 | Empty `MessageQueue` layer | `src/MessageQueue/` | Add producers/consumers (RabbitMQ, Kafka, etc.) |
+| 5 | Empty `CrossCutting` layer | `src/CrossCutting/` | Add shared utilities, constants, or cross-cutting concerns |
+| 6 | Empty test projects | `*.Tests/` | Add xUnit/NUnit/MSTest and write tests |
+| 7 | No CI/CD | Root | Add GitHub Actions / Azure DevOps when ready |
+| 8 | Empty Dockerfiles | `docker/` | Add build/publish steps for containerization |
+| 9 | Permissive CORS | `CorsPolicyExtension.cs` | Restrict origins/methods when deploying to production |
+| 10 | No authentication | `ApiDependencyInjectionConfig.cs` | Add JWT/Auth when security requirements are defined |
+| 11 | `{API_NAME}` placeholders | `ScalarConfiguration.cs`, README | Rename when cloning template |
+| 12 | No `appsettings.Development.json` | `src/Api/` | Create environment-specific configs as needed |
 
 ---
 
