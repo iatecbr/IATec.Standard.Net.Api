@@ -31,7 +31,7 @@
 - [Docker](#docker)
 - [CI/CD](#cicd)
 - [Renaming the API](#renaming-the-api)
-- [Known Limitations / TODOs](#known-limitations--todos)
+- [Template Extension Points](#template-extension-points)
 - [Contributing](#contributing)
 - [Changelog](#changelog)
 
@@ -337,40 +337,10 @@ There is **no** `appsettings.Development.json` file in the project. All configur
 
 The project uses **Scalar** (not Swagger) for interactive API documentation.
 
-### Configuration (`ScalarConfiguration.cs`)
-
-```csharp
-services.AddOpenApi(options => {
-    options.AddDocumentTransformer((document, _, _) => {
-        document.Info = new() {
-            Title = "{API_NAME}",
-            Version = "v1",
-            Description = "API documentation"
-        };
-        return Task.CompletedTask;
-    });
-});
-```
-
-### Scalar UI endpoint
-
-```csharp
-app.MapScalarApiReference("/documentation", options => {
-    options
-        .WithTitle($"{{API_NAME}} - {environment.EnvironmentName}")
-        .WithTheme(ScalarTheme.Mars)
-        .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient)
-        .ForceDarkMode()
-        .ExpandAllTags()
-        .SortTagsAlphabetically();
-}).AllowAnonymous();
-```
-
-### Access
-
 - **OpenAPI JSON:** `/openapi/v1.json`
 - **Scalar UI:** `/documentation`
 - **Availability:** Only in non-Production environments (`!app.Environment.IsProduction()`).
+- **Theme:** Mars, dark mode, C# HttpClient as default client.
 
 ### Authentication in Scalar
 
@@ -382,22 +352,8 @@ The Scalar UI is configured with `AllowAnonymous()`. JWT Bearer security definit
 
 Endpoint: `GET /_healthcheck/status`
 
-### What it checks
-
 - **VersionHealthCheck** — returns `HealthStatus.Healthy` with the assembly version string.
 - Response is formatted via `HealthChecks.UI.Client` (rich JSON with UI metadata).
-
-### `HealthCheckExtension.cs` implementation
-
-```csharp
-services.AddHealthChecks()
-    .AddCheck<VersionHealthCheck>("Version", HealthStatus.Healthy, [environment.EnvironmentName]);
-
-app.UseHealthChecks("/_healthcheck/status", new HealthCheckOptions {
-    Predicate = _ => true,
-    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-});
-```
 
 ---
 
@@ -415,19 +371,9 @@ Configured in `VersioningExtension.cs`:
 
 ## CORS
 
-Configured in `CorsPolicyExtension.cs`:
+Configured in `CorsPolicyExtension.cs` with `AllowAnyHeader`, `AllowAnyMethod`, `AllowAnyOrigin`.
 
-```csharp
-builder.AllowAnyHeader()
-    .AllowAnyMethod()
-    .AllowAnyOrigin();
-```
-
-**Exposed headers:**
-- `X-Custom-Header`
-- `Location`
-- `Content-Disposition`
-- `Content-Length`
+**Exposed headers:** `X-Custom-Header`, `Location`, `Content-Disposition`, `Content-Length`.
 
 > ⚠️ **Warning:** `AllowAnyOrigin()` is extremely permissive. Review and restrict before deploying to production.
 
@@ -450,24 +396,12 @@ The previous Swagger JWT Bearer setup was removed along with Swashbuckle. To add
 
 The only implemented feature domain. All handlers are **placeholders** (`NotImplementedException`).
 
-### Commands
-
 | File | Type | Details |
 |------|------|---------|
 | `CreateAssetCommand.cs` | `readonly record struct` | `IRequest<Result>` from MediatR + FluentResults |
 | `CreateAssetCommandHandler.cs` | Handler | `throw new NotImplementedException()` |
-
-### Queries
-
-| File | Type | Details |
-|------|------|---------|
 | `CheckIfExistsAssetQuery.cs` | `readonly record struct` | `IRequest<Result<bool>>` |
 | `CheckIfExistsAssetQueryHandler.cs` | Handler | `throw new NotImplementedException()` |
-
-### Validators
-
-| File | Type | Details |
-|------|------|---------|
 | `CreateAssetValidator.cs` | `AbstractValidator<CreateAssetCommand>` | **Empty — no rules defined** |
 
 > The validator is still registered in DI via `AddValidatorsFromAssemblyContaining<CreateAssetValidator>()` and will pass through without validation.
@@ -512,54 +446,22 @@ Then delegates to `ILogService.SendAsync()`.
 | Implementation | `LogService.cs` |
 | Contract | `ILogService` (from `IATec.Shared.Domain`) |
 
-**Registration:**
-```csharp
-services.AddHttpClient<ILogService, LogService>((sp, client) => {
-    var url = sp.GetRequiredService<IOptions<LogServiceOption>>().Value.Url;
-    if (string.IsNullOrWhiteSpace(url))
-        throw new ArgumentNullException(nameof(url), "Log service url is required");
-    client.BaseAddress = new Uri(url);
-});
-```
-
 ---
 
 ## Persistence Layer
 
-### `PersistenceDependencyInjectionConfig.cs`
-
-```csharp
-public static void ConfigurePersistence(this IServiceCollection services, IConfiguration configuration)
-{
-    services.AddData(configuration);
-}
-```
-
-### `DatabaseExtension.cs`
-
-```csharp
-public static void AddData(this IServiceCollection services, IConfiguration configuration)
-{
-    // EMPTY
-}
-```
-
 **Status:** No ORM, no repositories, no DbContext, no migrations. The layer is wired in DI but does nothing.
+
+- `PersistenceDependencyInjectionConfig.cs` — wires the layer.
+- `DatabaseExtension.cs` — **empty method body** (`public static void AddData(...) { }`).
+
+> No ORM (EF Core, Dapper) is referenced. `ConnectionStrings` in `appsettings.json` is empty `{}`.
 
 ---
 
 ## Message Queue Layer
 
-### `MessageQueueDependencyInjectionConfig.cs`
-
-```csharp
-public static IServiceCollection ConfigureMessageQueue(this IServiceCollection services)
-{
-    return services; // EMPTY
-}
-```
-
-**Status:** No message queue library referenced (no RabbitMQ, Kafka, Azure Service Bus, etc.).
+**Status: Completely empty.** `ConfigureMessageQueue()` returns `services` with no registrations. No message queue library referenced.
 
 ---
 
