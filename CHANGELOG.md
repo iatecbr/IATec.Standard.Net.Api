@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `README.md` — full template documentation: architecture, configuration, prerequisites, Docker, CI/CD, renaming guide, and Template Extension Points table.
 - `CHANGELOG.md` — full release history.
+- `AGENTS.md` — compact instruction file for OpenCode sessions: commands, architecture, MongoDB quirks, feature conventions, and known stubs.
 
 ### UPDATED
 
