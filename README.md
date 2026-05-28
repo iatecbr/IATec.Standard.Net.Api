@@ -1,141 +1,240 @@
-# 🚀 {API_NAME}
+# {API_NAME}
 
-> Base template for .NET API development at IATec, promoting standard practices, efficiency and security.
+> Robust .NET BFF (Backend for Frontend) development template at IATec, promoting standard practices, efficiency and security. Ideal for scalable, high-performance APIs acting as an orchestration layer for frontend clients.
+
+**Current Version:** `2.1.0`
 
 ---
 
-## 📋 Index
+## 📋 Table of Contents
 
 - [About the Project](#about-the-project)
 - [Technologies and Stack](#technologies-and-stack)
-- [Architecture](#architecture)
+- [Project Structure](#project-structure)
+- [Architecture Layers](#architecture-layers)
 - [Prerequisites](#prerequisites)
 - [How to Run](#how-to-run)
 - [Configuration](#configuration)
-- [Health Checks](#health-checks)
 - [API Documentation (Scalar)](#api-documentation-scalar)
+- [Health Checks](#health-checks)
+- [API Versioning](#api-versioning)
+- [CORS](#cors)
 - [Authentication](#authentication)
-- [Tests](#tests)
-- [Renaming the API](#renaming-the-api)
+- [Feature: Assets](#feature-assets)
+- [Logging Dispatcher](#logging-dispatcher)
+- [External Services (AntiCorruption)](#external-services-anticorruption)
+- [Persistence Layer](#persistence-layer)
+- [Domain Layer](#domain-layer)
+- [Message Queue Layer](#message-queue-layer)
+- [CrossCutting Layer](#crosscutting-layer)
+- [Test Projects](#test-projects)
 - [Docker](#docker)
-- [Changelog](CHANGELOG.md)
+- [CI/CD](#cicd)
+- [Renaming the API](#renaming-the-api)
+- [Template Extension Points](#template-extension-points)
 - [Contributing](#contributing)
+- [Changelog](#changelog)
 
 ---
 
 ## About the Project
 
-This repository is a **base template** for creating new .NET APIs following IATec standards. It comes pre-configured with:
+This repository is a **base template / scaffolding project** for creating new .NET **BFF (Backend for Frontend)** services following IATec standards.
 
-- Decoupled layered architecture (Api, Application, CrossCutting, Domain, Persistence, AntiCorruption, MessageQueue).
-- API versioning via query string (`api-version`).
-- Interactive API documentation via **Scalar/OpenAPI** (non-Production environments only).
-- Health Check endpoint returning API assembly version.
-- CORS configuration with exposed headers.
-- Integration with shared libraries (`IATec.Shared.*`).
-- Validation via `FluentValidation` and result handling via `FluentResults`.
-- MediatR with pipeline behaviors (`ValidatorPipelineBehavior`, `ExceptionPipelineBehavior`) from `IATec.Shared.Behaviors`.
-- Logging dispatcher integration with IATec Log Service.
-- Sample Asset feature with Command, Query, Validator and Handlers (stub implementations).
+In the BFF pattern, the **frontend knows only this API** — it never calls downstream services directly. This API is responsible for receiving all frontend requests, calling whichever internal microservices or external APIs are needed, aggregating the results, and returning a single response. This keeps the frontend decoupled from the backend topology and centralizes cross-cutting concerns (auth, logging, error handling) in one place.
 
-> **Note:** Whenever creating a new API from this template, read the [Renaming the API](#renaming-the-api) section to adjust names and references.
+### What comes pre-configured
+
+- Clean Architecture / Vertical Slices with **MediatR CQRS**.
+- **API Versioning** via `Asp.Versioning.Mvc` (query string `api-version`).
+- **Scalar** interactive API documentation (replaces Swagger).
+- **Health Checks** with version endpoint.
+- **CORS** policy (`AllowAnyOrigin`, `AllowAnyMethod`, `AllowAnyHeader`).
+- **FluentValidation** pipeline behavior (validators run before handlers).
+- **Exception pipeline behavior** via `IATec.Shared.Behaviors`.
+- **Logging dispatcher** sending structured logs to IATec Log Service.
+- **Typed HttpClient** for external IATec Log Service integration.
+- Integration with internal `IATec.Shared.*` packages.
+
+### What is NOT implemented (placeholder scaffolding)
+
+- All command/query handlers in `Application/Features/Assets/` throw `NotImplementedException`.
+- `Persistence` layer is **empty** — BFF pattern typically has no direct database access.
+- `Domain` project contains **zero `.cs` files**.
+- `CrossCutting` project contains **zero `.cs` files**.
+- `MessageQueueDependencyInjectionConfig` is **empty**.
+- `docker/Dockerfile` and `docker/Local.Dockerfile` are **empty (0 bytes)**.
+- Test projects have **no test framework packages** (xUnit, NUnit, MSTest) and **zero tests**.
+- No CI/CD pipelines (no `.github/workflows`).
+
+> **Note:** Whenever creating a new BFF from this template, read the [Renaming the API](#renaming-the-api) section to adjust names and references.
 
 ---
 
 ## Technologies and Stack
 
-| Technology | Version | Source |
-|------------|---------|--------|
-| .NET | 10.0 | All `.csproj` files |
-| Scalar.AspNetCore | 2.14.14 | `Api.csproj` |
-| Microsoft.AspNetCore.OpenApi | 10.0.8 | `Api.csproj` |
-| API Versioning (Asp.Versioning.Mvc) | 10.0.0 | `Api.csproj` |
-| API Versioning (Asp.Versioning.Mvc.ApiExplorer) | 10.0.0 | `Api.csproj` |
-| HealthChecks UI Client | 9.0.0 | `Api.csproj` |
-| MediatR | 14.1.0 | `CrossCutting.csproj` |
-| FluentValidation | 12.1.1 | `Domain.csproj` |
-| FluentValidation.DependencyInjectionExtensions | 12.1.1 | `Domain.csproj` |
-| FluentResults | 4.0.0 | `Domain.csproj` |
-| IATec.Shared.Api | 1.2.0 | `Api.csproj` |
-| IATec.Shared.Application | 2.0.0 | `Application.csproj` |
-| IATec.Shared.Behaviors | 1.3.0 | `CrossCutting.csproj` |
-| IATec.Shared.Domain | 2.0.1 | `Domain.csproj` |
-| IATec.Shared.HttpClient | 3.0.0 | `AntiCorruption.csproj` |
-| Microsoft.Extensions.DependencyInjection.Abstractions | 10.0.8 | `AntiCorruption.csproj`, `MessageQueue.csproj` |
-| Microsoft.Extensions.Http | 10.0.8 | `AntiCorruption.csproj`, `Persistence.csproj` |
-| Microsoft.Extensions.Options | 10.0.8 | `Application.csproj` |
-| Microsoft.Extensions.Configuration | 10.0.8 | `Persistence.csproj` |
-| Microsoft.Extensions.Configuration.Binder | 10.0.8 | `Persistence.csproj` |
+| Technology | Version |
+|------------|---------|
+| .NET | 10.0 |
+| ASP.NET Core | 10.0.8 |
+| Scalar.AspNetCore | 2.14.14 |
+| Microsoft.AspNetCore.OpenApi | 10.0.8 |
+| API Versioning (Asp.Versioning.Mvc) | 10.0.0 |
+| Asp.Versioning.Mvc.ApiExplorer | 10.0.0 |
+| AspNetCore.HealthChecks.UI.Client | 9.0.0 |
+| MediatR | 14.1.0 |
+| FluentValidation | 12.1.1 |
+| FluentValidation.DependencyInjectionExtensions | 12.1.1 |
+| FluentResults | 4.0.0 |
+| Microsoft.Extensions.Configuration | 10.0.8 |
+| Microsoft.Extensions.Configuration.Binder | 10.0.8 |
+| Microsoft.Extensions.Http | 10.0.8 |
+| Microsoft.Extensions.Options | 10.0.8 |
+| IATec.Shared.Api | 1.2.0 |
+| IATec.Shared.Application | 2.0.0 |
+| IATec.Shared.Domain | 2.0.1 |
+| IATec.Shared.HttpClient | 3.0.0 |
+| IATec.Shared.Behaviors | 1.3.0 |
+
+> **CSPROJ Settings:** `Nullable=enable`, `ImplicitUsings=enable`, `InvariantGlobalization=false`, `GenerateDocumentationFile=True`.
 
 ---
 
-## Architecture
-
-The project follows a layered organization inside the `src/` folder:
+## Project Structure
 
 ```
-src/
-├── Api/                        → ASP.NET Core entrypoint (Program, Configs, DI)
-│   ├── Configurations/
-│   │   ├── ApiDependencyInjectionConfig.cs
-│   │   └── Extensions/
-│   │       ├── CorsPolicyExtension.cs
-│   │       ├── HealthCheckExtension.cs
-│   │       ├── MigrationExtensions.cs
-│   │       ├── OptionsExtension.cs
-│   │       ├── ScalarConfiguration.cs
-│   │       └── VersioningExtension.cs
-│   ├── Controllers/            → Empty folder (no controllers)
-│   └── Properties/
-│       └── launchSettings.json
-├── Application/                → Use cases, handlers, dispatchers, validators
-│   ├── Configurations/
-│   │   ├── ApplicationDependencyInjectionConfig.cs
-│   │   ├── Extensions/
-│   │   │   ├── MediatorConfig.cs
-│   │   │   └── ValidatorConfig.cs
-│   │   └── Factories/
-│   │       └── ValidatorFactory.cs
-│   ├── Dispatchers/
-│   │   └── Logging/
-│   │       └── LogDispatcher.cs
-│   └── Features/
-│       └── Assets/
-│           ├── Commands/
-│           │   ├── CreateAssetCommand.cs
-│           │   └── CreateAssetCommandHandler.cs
-│           ├── Queries/
-│           │   ├── CheckIfExistsAssetQuery.cs
-│           │   └── CheckIfExistsAssetQueryHandler.cs
-│           └── Validators/
-│               └── CreateAssetValidator.cs
-├── CrossCutting/               → Shared behaviors (via IATec.Shared.Behaviors)
-├── Domain/                     → Business logic via IATec.Shared.Domain
-├── Persistence/                → Data access (stub)
-│   ├── Configurations/
-│   │   ├── PersistenceDependencyInjectionConfig.cs
-│   │   └── Extensions/
-│   │       └── DatabaseExtension.cs
-├── AntiCorruption/             → External service adapters
-│   ├── Configurations/
-│   │   ├── AntiCorruptionDependencyInjectionConfig.cs
-│   │   └── Extensions/
-│   │       └── LoggingConfig.cs
-│   └── Services/
-│       └── Iatec/
-│           └── LogService.cs
-├── MessageQueue/               → Message queue DI placeholder
-├── Domain.Tests/               → Domain layer unit tests (empty)
-└── Application.Tests/            → Application layer unit tests (empty)
+IATec.Standard.Net.Bff/
+├── src/
+│   ├── Api/
+│   │   ├── Configurations/
+│   │   │   ├── ApiDependencyInjectionConfig.cs
+│   │   │   └── Extensions/
+│   │   │       ├── CorsPolicyExtension.cs
+│   │   │       ├── HealthCheckExtension.cs
+│   │   │       ├── MigrationExtensions.cs
+│   │   │       ├── OptionsExtension.cs
+│   │   │       ├── ScalarConfiguration.cs
+│   │   │       └── VersioningExtension.cs
+│   │   ├── Controllers/
+│   │   │   └── (empty folder)
+│   │   ├── Properties/
+│   │   │   └── launchSettings.json
+│   │   ├── appsettings.json
+│   │   └── Program.cs
+│   │
+│   ├── Application/
+│   │   ├── Configurations/
+│   │   │   ├── ApplicationDependencyInjectionConfig.cs
+│   │   │   ├── Extensions/
+│   │   │   │   ├── MediatorConfig.cs
+│   │   │   │   └── ValidatorConfig.cs
+│   │   │   └── Factories/
+│   │   │       └── ValidatorFactory.cs
+│   │   ├── Dispatchers/
+│   │   │   └── Logging/
+│   │   │       └── LogDispatcher.cs
+│   │   └── Features/
+│   │       └── Assets/
+│   │           ├── Commands/
+│   │           │   ├── CreateAssetCommand.cs
+│   │           │   └── CreateAssetCommandHandler.cs
+│   │           ├── Queries/
+│   │           │   ├── CheckIfExistsAssetQuery.cs
+│   │           │   └── CheckIfExistsAssetQueryHandler.cs
+│   │           └── Validators/
+│   │               └── CreateAssetValidator.cs
+│   │
+│   ├── CrossCutting/
+│   │   └── (empty — no .cs files)
+│   │
+│   ├── Domain/
+│   │   └── (empty — no .cs files)
+│   │
+│   ├── Persistence/
+│   │   ├── Configurations/
+│   │   │   ├── PersistenceDependencyInjectionConfig.cs
+│   │   │   └── Extensions/
+│   │   │       └── DatabaseExtension.cs
+│   │   └── (empty — BFF pattern typically has no direct DB access)
+│   │
+│   ├── AntiCorruption/
+│   │   ├── Configurations/
+│   │   │   ├── AntiCorruptionDependencyInjectionConfig.cs
+│   │   │   └── Extensions/
+│   │   │       └── LoggingConfig.cs
+│   │   └── Services/
+│   │       └── Iatec/
+│   │           └── LogService.cs
+│   │
+│   ├── MessageQueue/
+│   │   └── Configurations/
+│   │       └── MessageQueueDependencyInjectionConfig.cs
+│   │
+│   ├── Domain.Tests/
+│   │   └── Domain.Tests.csproj (empty — no tests, no framework)
+│   │
+│   └── Application.Tests/
+│       └── Application.Tests.csproj (empty — no tests, no framework)
+│
+├── docker/
+│   ├── Dockerfile (empty — 0 bytes)
+│   └── Local.Dockerfile (empty — 0 bytes)
+│
+├── secrets/
+│   └── secrets.yml (Kubernetes Secret template)
+│
+├── IATec.Standard.Net.Bff.sln
+├── README.md
+└── CHANGELOG.md
 ```
 
-> **Note:** The `Domain` layer no longer contains local contracts, entities, or utilities. All domain contracts (`IEntity`, `IReadRepository`, `IWriteRepository`, `ILogDispatcher`, `ILogService`, etc.), seedwork entities (`Entity`, `EntityInt32`, `EntityNullable`), shared options (`LogServiceOption`, `ContainerOption`), and error/success types have been moved to the `IATec.Shared.Domain` NuGet package (v2.0.1) as of the Reset Project (2026-01-20).
+---
+
+## Architecture Layers
+
+### 1. Api (Presentation Layer)
+
+Entrypoint ASP.NET Core Web API. Orchestrates all configurations and maps controllers.
+
+### 2. Application Layer
+
+Contains use cases, MediatR handlers, validators, dispatchers, and factories. In a BFF, handlers typically orchestrate calls to downstream services via `AntiCorruption` typed clients.
+
+**Mediator Pipeline Behaviors (from `IATec.Shared.Behaviors`):**
+1. `ValidatorPipelineBehavior<,>` — runs FluentValidation validators before the handler.
+2. `ExceptionPipelineBehavior<,>` — global exception handling wrapper.
+
+### 3. Domain Layer
+
+**Currently empty.** In a BFF context, the Domain layer typically holds DTOs, response models, and contracts for downstream service calls rather than business entities.
+
+### 4. Persistence Layer
+
+**Currently empty scaffolding.** BFFs typically do not own a database. If caching or session storage is needed, add it here.
+
+- `PersistenceDependencyInjectionConfig.cs` — wires the layer.
+- `DatabaseExtension.cs` — **empty method body** (`public static void AddData(...) { }`).
+
+### 5. AntiCorruption Layer
+
+The primary extension point in a BFF. Add typed `HttpClient` services here to communicate with downstream microservices and APIs.
+
+Currently implements:
+- **IATec Log Service** (`LogService.cs`) — typed `HttpClient` sending `LogDto` via `POST v1/log`.
+
+### 6. MessageQueue Layer
+
+**Currently empty scaffolding.** `ConfigureMessageQueue()` returns `services` with no registrations.
+
+### 7. CrossCutting Layer
+
+**Currently empty.** Contains only `CrossCutting.csproj` with references to `IATec.Shared.Behaviors` (`1.3.0`) and `MediatR` (`14.1.0`). **Zero `.cs` source files.**
 
 ---
 
 ## Prerequisites
 
-- [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0) (or compatible higher version)
+- [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
 - (Optional) Docker for building/publishing images
 - Editor of your choice (VS, VS Code, Rider)
 
@@ -162,238 +261,227 @@ dotnet restore
 dotnet run --project src/Api/Api.csproj
 ```
 
-By default, the application will be available at:
-- `http://localhost:5015`
+**Default profile (from `launchSettings.json`):**
+- URL: `http://localhost:5015`
 - Environment: `Local`
-
-> The browser will automatically open the Scalar documentation (`/documentation`) on startup due to the `launchSettings.json` profile configuration.
-> The exact URL may vary depending on the active launch profile. Check `src/Api/Properties/launchSettings.json` or the console output when starting the project.
+- Auto-opens browser at `/documentation`
 
 ---
 
 ## Configuration
 
-Settings are located in `src/Api/appsettings.json` (and its environment overrides, such as `appsettings.Development.json`).
+Settings are located in `src/Api/appsettings.json`.
 
-**Current structure example:**
-
-```json
-{
-  "TimeZone": "UTC",
-  "Container": {
-    "Name": "Vertical-ContextContainerType",
-    "ContainerId": "ContainerId"
-  },
-  "Logging": {
-    "LogLevel": {
-      "Default": "Information"
-    }
-  },
-  "ConnectionStrings": {}
-}
-```
-
-### Configured Options (`IOptions<T>`)
-
-The following typed options are registered in `src/Api/Configurations/Extensions/OptionsExtension.cs` via `IATec.Shared.Domain.Options`:
-
-| Option | Configuration Key | Source |
-|--------|------------------|--------|
-| `LogServiceOption` | `LogServiceOption.Key` (value `"IATec:Services:Log"`) | `IATec.Shared.Domain` |
-| `ContainerOption` | `ContainerOption.Key` (value `"Container"`) | `IATec.Shared.Domain` |
-
-### What to configure when starting a new API
+### What to configure when starting a new BFF
 
 | Section | Description | Example |
-|---------|-----------|---------|
+|---------|-------------|---------|
 | `TimeZone` | Application time zone | `"America/Sao_Paulo"` |
-| `Container` | Deployment/container metadata | Adjust `Name` and `ContainerId` according to your environment |
-| `Logging` | ASP.NET Core log level | `"Debug"`, `"Information"`, `"Warning"` |
-| `ConnectionStrings` | Database and service connection strings | `"DefaultConnection": "Server=..."` |
+| `Container.Name` | Deployment container metadata name | `"MyBff-Production"` |
+| `Container.ContainerId` | Container identifier | `"my-bff-container"` |
+| `Logging.LogLevel.Default` | ASP.NET Core log level | `"Debug"`, `"Information"`, `"Warning"` |
+| `ConnectionStrings` | Optional cache/storage connection strings | `"Redis": "localhost:6379"` |
 
-> **Tip:** Add new configuration sections in `src/Api/Configurations/Extensions/OptionsExtension.cs` for typed injection via `IOptions<T>`.
+### Typed Options registered in DI
 
----
+In `OptionsExtension.cs`:
 
-## Health Checks
+| Option Class | Configuration Key | Purpose |
+|--------------|-------------------|---------|
+| `LogServiceOption` | `LogServiceOption` | URL for IATec Log Service |
+| `ContainerOption` | `ContainerOption` | Container metadata for logging dispatcher |
 
-The project has a health check endpoint that returns API version information:
+> **Tip:** Add downstream service URL options in `src/Api/Configurations/Extensions/OptionsExtension.cs` for typed injection via `IOptions<T>`.
 
-```
-GET /_healthcheck/status
-```
+### No `appsettings.Development.json`
 
-Features:
-- Returns `Healthy`/`Unhealthy` status.
-- Includes the API assembly version (`Assembly.GetEntryAssembly()?.GetName().Version`) in the response body.
-- Response in `HealthChecks.UI.Client` visual format (`UIResponseWriter.WriteHealthCheckUIResponse`).
+There is **no** `appsettings.Development.json` file in the project. All configuration currently lives in the base `appsettings.json`.
 
 ---
 
 ## API Documentation (Scalar)
 
-Interactive documentation powered by **Scalar** and native ASP.NET Core **OpenAPI** is available in **non-Production** environments only:
+The project uses **Scalar** (not Swagger) for interactive API documentation.
 
-- OpenAPI JSON: `/openapi/v1.json`
-- Scalar UI: `/documentation`
+- **OpenAPI JSON:** `/openapi/v1.json`
+- **Scalar UI:** `/documentation`
+- **Availability:** Only in non-Production environments (`!app.Environment.IsProduction()`).
+- **Theme:** Mars, dark mode, C# HttpClient as default client.
 
-### Configured features
+---
 
-- Automatically generated from native `Microsoft.AspNetCore.OpenApi`.
-- **Mars theme** with forced dark mode.
-- Tags expanded and sorted alphabetically.
-- Default HTTP client configured as **C# HttpClient**.
-- Title includes environment name (e.g., `{API_NAME} - Local`).
-- Anonymous access allowed.
+## Health Checks
+
+Endpoint: `GET /_healthcheck/status`
+
+- **VersionHealthCheck** — returns `HealthStatus.Healthy` with the assembly version string.
+- Response is formatted via `HealthChecks.UI.Client` (rich JSON with UI metadata).
+
+---
+
+## API Versioning
+
+Configured in `VersioningExtension.cs`:
+
+- **Default version:** `1.0`
+- **Assume default when unspecified:** `true`
+- **Report API versions:** `true`
+- **Version reader:** Query string parameter `api-version`
+- **Explorer group format:** `'v'VVV` (e.g., `v1`)
+
+---
+
+## CORS
+
+Configured in `CorsPolicyExtension.cs` with `AllowAnyHeader`, `AllowAnyMethod`, `AllowAnyOrigin`.
+
+**Exposed headers:** `X-Custom-Header`, `Location`, `Content-Disposition`, `Content-Length`.
+
+> ⚠️ **Warning:** `AllowAnyOrigin()` is extremely permissive. Review and restrict before deploying to production.
 
 ---
 
 ## Authentication
 
-The Scalar UI supports sending JWT tokens in the `Authorization` header with the `Bearer` scheme.
+**Currently NOT configured.**
 
-To enable actual token validation in the API:
-1. Add the desired authentication package (e.g. `Microsoft.AspNetCore.Authentication.JwtBearer`).
-2. Configure token validation in `ApiDependencyInjectionConfig.cs` or in a new extension method.
-3. Insert `app.UseAuthentication()` before `app.UseAuthorization()` in `UseApi()`.
+JWT Bearer setup is not present. To add JWT authentication:
 
----
-
-## Tests
-
-The template includes two test projects without any test framework or test cases configured:
-
-| Project | Layer Tested | Framework | Status |
-|---------|--------------|-----------|--------|
-| `Domain.Tests` | Domain | None configured | Empty |
-| `Application.Tests` | Application | None configured | Empty |
-
-> **Note:** These projects were created as placeholders. You need to add a test framework (xUnit, NUnit, MSTest) and write tests.
-
-To run all tests:
-
-```bash
-dotnet test
-```
+1. Install `Microsoft.AspNetCore.Authentication.JwtBearer`.
+2. Configure token validation in `ApiDependencyInjectionConfig.cs` or a new extension method.
+3. Add `app.UseAuthentication()` before `app.UseAuthorization()` in `UseApi()`.
+4. Add security schemes to the OpenAPI document in `ScalarConfiguration.cs`.
 
 ---
 
-## Renaming the API
+## Feature: Assets
 
-> Whenever using this project as a base for a new API, follow the steps below to adjust names and references. The text `{API_NAME}` used throughout this README acts as a placeholder for the **actual project name** you want to use.
+The only implemented feature domain in the Application layer. All handlers are **placeholders** (`NotImplementedException`).
 
-### Step-by-step guide
+| File | Type | Details |
+|------|------|---------|
+| `CreateAssetCommand.cs` | `readonly record struct` | `IRequest<Result>` from MediatR + FluentResults |
+| `CreateAssetCommandHandler.cs` | Handler | `throw new NotImplementedException()` |
+| `CheckIfExistsAssetQuery.cs` | `readonly record struct` | `IRequest<Result<bool>>` |
+| `CheckIfExistsAssetQueryHandler.cs` | Handler | `throw new NotImplementedException()` |
+| `CreateAssetValidator.cs` | `AbstractValidator<CreateAssetCommand>` | **Empty — no rules defined** |
 
-#### 1. Clone the repository and enter the folder
-
-```bash
-git clone <repository-url>
-cd {API_NAME}
-```
-
-#### 2. Rename the Solution file
-
-```bash
-mv IATec.Standard.Net.Api.sln {API_NAME}.sln
-```
-
-#### 3. (Optional) Rename `AssemblyName` and `RootNamespace` in `.csproj` files
-
-The current `.csproj` files do **not** explicitly define `AssemblyName` or `RootNamespace`; they inherit from the file name by default. If you rename the project files, the assembly names will update automatically.
-
-If you need explicit control, add the properties:
-
-```xml
-<PropertyGroup>
-    <AssemblyName>{API_NAME}</AssemblyName>
-    <RootNamespace>{API_NAME}</RootNamespace>
-</PropertyGroup>
-```
-
-#### 4. Adjust C# namespaces
-
-Run a **Replace All** in the `src/` folder for each project layer. Example:
-
-| From | To (example) |
-|------|--------------|
-| `namespace Api;` | `namespace ProjectName.Api;` |
-| `namespace Application;` | `namespace ProjectName.Application;` |
-| `namespace Domain;` | `namespace ProjectName.Domain;` |
-
-Or keep simplified namespaces (`Api`, `Domain`, `Application`, etc.) — this is a team preference.
-
-#### 5. Update Scalar title
-
-Open `src/Api/Configurations/Extensions/ScalarConfiguration.cs` and change:
-
-```csharp
-document.Info = new()
-{
-    Title = "{API_NAME}",
-```
-
-And also:
-
-```csharp
-.WithTitle($"{{API_NAME}} - {environment.EnvironmentName}")
-```
-
-#### 6. Update README
-
-Replace **all** occurrences of `{API_NAME}` in this `README.md` with the actual project name.
-
-You can use your editor's `Find & Replace` (usually `Ctrl+Shift+H`) with the following text:
-
-- **Find:** `{API_NAME}`
-- **Replace:** `MyNewProjectName`
-
-#### 7. Review and commit
-
-After all changes, run a full build to ensure everything compiles:
-
-```bash
-dotnet build
-```
-
-Then commit your changes:
-
-```bash
-git add .
-git commit -m "refactor: rename template API to {API_NAME}"
-```
+> Replace this feature with your own BFF orchestration features when cloning this template.
 
 ---
 
-### Quick Checklist
+## Logging Dispatcher
 
-Use this checklist to ensure you didn't miss any step:
+### `LogDispatcher.cs`
 
-- [ ] Repository cloned and folder renamed to new API name
-- [ ] `.sln` file renamed to `{API_NAME}.sln`
-- [ ] (Optional) `AssemblyName`/`RootNamespace` explicitly set in `.csproj` files if needed
-- [ ] Namespaces adjusted in source code (`src/`)
-- [ ] Scalar `Title` updated in `ScalarConfiguration.cs`
-- [ ] All `{API_NAME}` placeholders replaced in `README.md`
-- [ ] `dotnet build` runs successfully with zero errors
-- [ ] Changes committed to version control
+Implements `ILogDispatcher` (from `IATec.Shared.Domain.Contracts.Dispatcher`).
+
+**Constructs a `LogDto` with:**
+- `ContainerKey` — from `ContainerOption.Key`
+- `Source`, `Owner`, `Action` — caller-provided
+- `Content` — `object?.ToString() ?? string.Empty`
+- `Date` — `DateTime.UtcNow`
+- `Id` — `string.Empty`
+- `UserId` — `string.Empty`
+
+Then delegates to `ILogService.SendAsync()`.
+
+### `ILogService` implementation
+
+**`LogService.cs`** (AntiCorruption layer):
+- Typed `HttpClient` with base address from `LogServiceOption.Url`.
+- Sends `POST v1/log` as JSON.
+- **Does NOT throw on failure** — errors are caught and logged silently.
+
+---
+
+## External Services (AntiCorruption)
+
+The AntiCorruption layer is the primary extension point for a BFF — add typed `HttpClient` services here for each downstream microservice or API.
+
+### IATec Log Service
+
+| Config | File |
+|--------|------|
+| DI Registration | `LoggingConfig.cs` |
+| Implementation | `LogService.cs` |
+| Contract | `ILogService` (from `IATec.Shared.Domain`) |
+
+---
+
+## Persistence Layer
+
+**Status:** Empty scaffolding. BFFs typically do not own a database directly.
+
+- `PersistenceDependencyInjectionConfig.cs` — wires the layer.
+- `DatabaseExtension.cs` — **empty method body** (`public static void AddData(...) { }`).
+
+> If the BFF needs caching (Redis, MemoryCache) or session storage, implement it in this layer.
+
+---
+
+## Domain Layer
+
+**Status: Completely empty.**
+
+The `src/Domain/` directory contains:
+- `Domain.csproj` with NuGet references
+- `Models/` folder containing only an `.editorconfig` file
+- **Zero `.cs` source files**
+
+In a BFF context, this layer typically holds DTOs, response contracts, and aggregation models.
+
+---
+
+## Message Queue Layer
+
+**Status: Completely empty.** `ConfigureMessageQueue()` returns `services` with no registrations. No message queue library referenced.
+
+---
+
+## CrossCutting Layer
+
+**Status: Completely empty.**
+
+Contains only `CrossCutting.csproj` with references to `IATec.Shared.Behaviors` (`1.3.0`) and `MediatR` (`14.1.0`). **Zero `.cs` source files.**
+
+---
+
+## Test Projects
+
+| Project | Framework Packages | Test Files | Status |
+|---------|-------------------|------------|--------|
+| `Domain.Tests` | **None** | 0 | Empty |
+| `Application.Tests` | **None** | 0 | Empty |
+
+### To add tests
+
+```bash
+dotnet add src/Domain.Tests package xunit
+dotnet add src/Domain.Tests package Microsoft.NET.Test.Sdk
+dotnet add src/Domain.Tests package xunit.runner.visualstudio
+```
 
 ---
 
 ## Docker
 
-There is a `docker/Dockerfile` prepared for building the application.
+### `docker/Dockerfile`
+**Empty (0 bytes).**
 
-> **Attention:** The Dockerfile is currently **empty** (0 bytes). When creating a new API from this template, fill it according to your build pipeline. Basic example:
+### `docker/Local.Dockerfile`
+**Empty (0 bytes).**
+
+### Basic Dockerfile example
 
 ```dockerfile
-# syntax=docker/dockerfile:1
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
 WORKDIR /app
 EXPOSE 8080
 
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
-COPY .
+COPY . .
 RUN dotnet restore "src/Api/Api.csproj"
 RUN dotnet build "src/Api/Api.csproj" -c Release -o /app/build
 
@@ -406,20 +494,83 @@ COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "Api.dll"]
 ```
 
-### Kubernetes Secrets
+---
 
-A `secrets/secrets.yml` file is provided as a template for Kubernetes Secret manifests:
+## CI/CD
 
-```yaml
-apiVersion: v1
-kind: Secret
-metadata:
-  name: secret-#{deployment_name}#
-  namespace: #{namespace}#
-stringData:
+**Status: No CI/CD configured.**
+
+- No `.github/` folder.
+- No GitHub Actions workflows.
+- No Azure DevOps pipelines.
+- No Jenkins/GitLab CI files.
+
+The only file in `secrets/` is `secrets.yml`, a **Kubernetes Secret manifest template** with placeholders (`#{deployment_name}#`, `#{namespace}#`).
+
+---
+
+## Renaming the API
+
+> Follow these steps when using this project as a base for a new BFF.
+
+### 1. Solution file
+
+```bash
+mv IATec.Standard.Net.Bff.sln {API_NAME}.sln
 ```
 
-Update the placeholders (`#{deployment_name}#`, `#{namespace}#`) and add the required secret values under `stringData:` before applying to your cluster.
+### 2. Assembly and namespaces
+
+Update `Api.csproj` if desired:
+```xml
+<AssemblyName>{API_NAME}.Api</AssemblyName>
+<RootNamespace>{API_NAME}.Api</RootNamespace>
+```
+
+Run a **Replace All** in `src/` to adjust namespaces:
+
+| From | To (example) |
+|------|--------------|
+| `namespace Api;` | `namespace MyProject.Api;` |
+| `namespace Application;` | `namespace MyProject.Application;` |
+| `namespace Persistence;` | `namespace MyProject.Persistence;` |
+| `namespace Domain;` | `namespace MyProject.Domain;` |
+
+Or keep simplified namespaces (`Api`, `Application`, `Domain`, etc.).
+
+### 3. Scalar / OpenAPI title
+
+In `src/Api/Configurations/Extensions/ScalarConfiguration.cs`, replace `{API_NAME}` with the actual project name.
+
+### 4. README and CHANGELOG
+
+Replace all `{API_NAME}` placeholders with the actual project name.
+
+### 5. Version
+
+Update `<Version>` in `Api.csproj` to `1.0.0` for the new project.
+
+---
+
+## Template Extension Points
+
+This project is an **intentional scaffold/template**. The following items are **structural placeholders** — not bugs or missing features. Each represents an extension point where a new BFF project should add its own implementation.
+
+| # | Extension Point | Location | Purpose |
+|---|----------------|----------|---------|
+| 1 | `NotImplementedException` handlers | `Application/Features/Assets/` | Example command/query structure — replace with BFF orchestration logic |
+| 2 | Empty `AntiCorruption` services | `src/AntiCorruption/Services/` | Add typed HttpClient services for each downstream microservice |
+| 3 | Empty `Domain` layer | `src/Domain/` | Add DTOs, response contracts, and aggregation models |
+| 4 | Empty `Persistence` layer | `src/Persistence/` | Add caching (Redis, MemoryCache) if needed |
+| 5 | Empty `MessageQueue` layer | `src/MessageQueue/` | Add producers/consumers if the BFF publishes events |
+| 6 | Empty `CrossCutting` layer | `src/CrossCutting/` | Add shared utilities, constants, or cross-cutting concerns |
+| 7 | Empty test projects | `*.Tests/` | Add xUnit/NUnit/MSTest and write tests |
+| 8 | No CI/CD | Root | Add GitHub Actions / Azure DevOps when ready |
+| 9 | Empty Dockerfiles | `docker/` | Add build/publish steps for containerization |
+| 10 | Permissive CORS | `CorsPolicyExtension.cs` | Restrict origins/methods when deploying to production |
+| 11 | No authentication | `ApiDependencyInjectionConfig.cs` | Add JWT/Auth when security requirements are defined |
+| 12 | `{API_NAME}` placeholders | `ScalarConfiguration.cs`, README | Rename when cloning template |
+| 13 | No `appsettings.Development.json` | `src/Api/` | Create environment-specific configs as needed |
 
 ---
 
@@ -428,10 +579,12 @@ Update the placeholders (`#{deployment_name}#`, `#{namespace}#`) and add the req
 Contributions are welcome! To contribute:
 
 1. Fork the repository.
-2. Create a branch for your feature or fix: `git checkout -b feature/feature-name`.
-3. Commit your changes with clear messages.
+2. Create a branch: `git checkout -b feature/feature-name`.
+3. Commit with clear messages following [Conventional Commits](https://www.conventionalcommits.org/).
 4. Open a Pull Request for review.
 
 ---
 
-> **Note:** This is a base template. Feel free to add/remove layers, packages and configurations according to your business domain needs.
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for full release history.
