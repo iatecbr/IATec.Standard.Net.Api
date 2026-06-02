@@ -22,14 +22,14 @@ dotnet restore
 dotnet build
 
 # Run the API
-dotnet run --project Api
+dotnet run --project src/Api
 
 # Run all tests
 dotnet test
 
 # Run a single test project
-dotnet test Domain.Tests
-dotnet test Application.Tests
+dotnet test src/Domain.Tests
+dotnet test src/Application.Tests
 
 # Run a single test by name
 dotnet test --filter "FullyQualifiedName~MyTestMethod"
@@ -137,26 +137,29 @@ This isolates external API contracts from the domain model.
 ## File Organization
 
 ```
-Api/
-  Controllers/
-  Extensions/
-  Program.cs
-Application/
-  Features/{Feature}/
-    Commands/
-    Queries/
-    Validators/
-  Extensions/
-CrossCutting/
-  Extensions/
-Domain/
-  Contracts/
-  Models/
-Persistence/
-  Extensions/
-AntiCorruption/
-  Services/
-  Extensions/
-MessageQueue/
-  Extensions/
+src/
+  Api/
+    Controllers/
+    Extensions/
+    Program.cs
+  Application/
+    Features/{Feature}/
+      Commands/
+      Queries/
+      Validators/
+    Extensions/
+  Application.Tests/
+  CrossCutting/
+    Extensions/
+  Domain/
+    Contracts/
+    Models/
+  Domain.Tests/
+  Persistence/
+    Extensions/
+  AntiCorruption/
+    Services/
+    Extensions/
+  MessageQueue/
+    Extensions/
 ```
