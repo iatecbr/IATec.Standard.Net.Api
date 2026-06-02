@@ -196,19 +196,6 @@ IATec.Standard.Net.Api/
 
 Entrypoint ASP.NET Core Web API. Orchestrates all configurations and maps controllers.
 
-**Program.cs flow:**
-```csharp
-builder.Services
-    .ConfigureApi(builder.Configuration, builder.Environment)   // Api layer
-    .ConfigureApplication()                                        // Application layer
-    .ConfigureAntiCorruption()                                   // AntiCorruption layer
-    .ConfigureMessageQueue()                                     // MessageQueue layer
-    .ConfigurePersistence(builder.Configuration);                  // Persistence layer
-
-app.UseApi()
-    .Run();
-```
-
 ### 2. Application Layer
 
 Contains use cases, MediatR handlers, validators, dispatchers, and factories.
@@ -287,24 +274,6 @@ dotnet run --project src/Api/Api.csproj
 ## Configuration
 
 Settings are located in `src/Api/appsettings.json`.
-
-### Current `appsettings.json`
-
-```json
-{
-  "TimeZone": "UTC",
-  "Container": {
-    "Name": "Vertical-ContextContainerType",
-    "ContainerId": "ContainerId"
-  },
-  "Logging": {
-    "LogLevel": {
-      "Default": "Information"
-    }
-  },
-  "ConnectionStrings": {}
-}
-```
 
 ### What to configure when starting a new API
 
@@ -521,7 +490,6 @@ dotnet add src/Domain.Tests package xunit.runner.visualstudio
 ### Basic Dockerfile example
 
 ```dockerfile
-# syntax=docker/dockerfile:1
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
 WORKDIR /app
 EXPOSE 8080
