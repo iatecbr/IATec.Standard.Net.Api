@@ -19,7 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### ADDED
 - **Scalar.AspNetCore** (`2.14.14`) replacing Swagger.
-- `ScalarConfiguration.cs` — configures native OpenAPI document generation and Scalar UI at `/documentation`.
+- `ScalarExtension.cs` — configures native OpenAPI document generation and Scalar UI at `/documentation`.
 - `Microsoft.AspNetCore.OpenApi` (`10.0.8`).
 - `Microsoft.Extensions.Options` (`10.0.8`) in Application layer.
 

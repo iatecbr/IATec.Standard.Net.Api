@@ -112,7 +112,7 @@ IATec.Standard.Net.Api/
 │   │   │       ├── HealthCheckExtension.cs
 │   │   │       ├── MigrationExtensions.cs
 │   │   │       ├── OptionsExtension.cs
-│   │   │       ├── ScalarConfiguration.cs
+│   │   │       ├── ScalarExtension.cs
 │   │   │       └── VersioningExtension.cs
 │   │   ├── Controllers/
 │   │   │   └── (empty folder)
@@ -357,7 +357,7 @@ The previous Swagger JWT Bearer setup was removed along with Swashbuckle. To add
 1. Install `Microsoft.AspNetCore.Authentication.JwtBearer`.
 2. Configure token validation in `ApiDependencyInjectionConfig.cs` or a new extension method.
 3. Add `app.UseAuthentication()` before `app.UseAuthorization()` in `UseApi()`.
-4. Add security schemes to the OpenAPI document in `ScalarConfiguration.cs`.
+4. Add security schemes to the OpenAPI document in `ScalarExtension.cs`.
 
 ---
 
@@ -552,7 +552,7 @@ Or keep simplified namespaces (`Api`, `Application`, `Domain`, etc.).
 
 ### 3. Scalar / OpenAPI title
 
-In `src/Api/Configurations/Extensions/ScalarConfiguration.cs`, update:
+In `src/Api/Configurations/Extensions/ScalarExtension.cs`, update:
 ```csharp
 document.Info = new() { Title = "{API_NAME}", Version = "v1", ... };
 options.WithTitle($"{{API_NAME}} - {environment.EnvironmentName}")
@@ -572,20 +572,20 @@ Update `<Version>` in `Api.csproj` to `1.0.0` for the new project.
 
 This project is an **intentional scaffold/template**. The following items are **structural placeholders** — not bugs or missing features. Each represents an extension point where a new API project should add its own implementation.
 
-| # | Extension Point | Location | Purpose |
-|---|----------------|----------|---------|
-| 1 | `NotImplementedException` handlers | `Application/Features/Assets/` | Example command/query structure — replace with real business logic |
-| 2 | Empty `Domain` layer | `src/Domain/` | Add entities, aggregates, and business rules |
-| 3 | Empty `Persistence` layer | `src/Persistence/` | Add DbContext, repositories, migrations, connection strings |
-| 4 | Empty `MessageQueue` layer | `src/MessageQueue/` | Add producers/consumers (RabbitMQ, Kafka, etc.) |
-| 5 | Empty `CrossCutting` layer | `src/CrossCutting/` | Add shared utilities, constants, or cross-cutting concerns |
-| 6 | Empty test projects | `*.Tests/` | Add xUnit/NUnit/MSTest and write tests |
-| 7 | No CI/CD | Root | Add GitHub Actions / Azure DevOps when ready |
-| 8 | Empty Dockerfiles | `docker/` | Add build/publish steps for containerization |
-| 9 | Permissive CORS | `CorsPolicyExtension.cs` | Restrict origins/methods when deploying to production |
+| # | Extension Point | Location                          | Purpose |
+|---|----------------|-----------------------------------|---------|
+| 1 | `NotImplementedException` handlers | `Application/Features/Assets/`    | Example command/query structure — replace with real business logic |
+| 2 | Empty `Domain` layer | `src/Domain/`                     | Add entities, aggregates, and business rules |
+| 3 | Empty `Persistence` layer | `src/Persistence/`                | Add DbContext, repositories, migrations, connection strings |
+| 4 | Empty `MessageQueue` layer | `src/MessageQueue/`               | Add producers/consumers (RabbitMQ, Kafka, etc.) |
+| 5 | Empty `CrossCutting` layer | `src/CrossCutting/`               | Add shared utilities, constants, or cross-cutting concerns |
+| 6 | Empty test projects | `*.Tests/`                        | Add xUnit/NUnit/MSTest and write tests |
+| 7 | No CI/CD | Root                              | Add GitHub Actions / Azure DevOps when ready |
+| 8 | Empty Dockerfiles | `docker/`                         | Add build/publish steps for containerization |
+| 9 | Permissive CORS | `CorsPolicyExtension.cs`          | Restrict origins/methods when deploying to production |
 | 10 | No authentication | `ApiDependencyInjectionConfig.cs` | Add JWT/Auth when security requirements are defined |
-| 11 | `{API_NAME}` placeholders | `ScalarConfiguration.cs`, README | Rename when cloning template |
-| 12 | No `appsettings.Development.json` | `src/Api/` | Create environment-specific configs as needed |
+| 11 | `{API_NAME}` placeholders | `ScalarExtension.cs`, README      | Rename when cloning template |
+| 12 | No `appsettings.Development.json` | `src/Api/`                        | Create environment-specific configs as needed |
 
 ---
 
