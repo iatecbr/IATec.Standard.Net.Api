@@ -326,7 +326,7 @@ In `OptionsExtension.cs`:
 | Option Class | Configuration Key | Purpose |
 |--------------|-------------------|---------|
 | `LogServiceOption` | `LogServiceOption` | URL for IATec Log Service |
-| `ContainerOption` | `ContainerOption` | Container metadata for logging dispatcher |
+| `ContainerOption` | `Container` | Container metadata for logging dispatcher |
 
 In `PersistenceDependencyInjectionConfig.cs`:
 
